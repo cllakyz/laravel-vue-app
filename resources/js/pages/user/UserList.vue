@@ -1,6 +1,11 @@
 <template>
     <div>
-        <button class="btn btn-primary float-right" @click="fetchData">Yenile</button>
+        <user-modal v-bind:item="item" v-on:onSaved="refreshData"></user-modal>
+        <div class="btn-group float-right">
+            <button class="btn btn-primary" @click="fetchData">Yenile</button>
+            <button class="btn btn-success" @click="createData">Yeni Kullanıcı</button>
+        </div>
+
         <h1>Kullanıcılar</h1>
         <div class="alert alert-danger" v-if="errorMessage">
             {{ errorMessage }}
@@ -24,14 +29,16 @@
 
 <script>
     import Pagination from '../../components/Pagination';
+    import UserModal from './UserModal';
     export default {
         name: "UserList",
-        components: { Pagination },
+        components: {Pagination, UserModal},
         data(){
             return{
                 list: [],
                 errorMessage: null,
-                meta: {}
+                meta: {},
+                item: {}
             }
         },
         created(){
@@ -41,7 +48,7 @@
             fetchData(page=1){
                 this.list = [];
                 this.errorMessage = null;
-                axios.get(this.$parent.$data.api_url+'users', { params: {page}})
+                axios.get('users', { params: {page}})
                     .then(response => {
                         this.list = response.data.data;
                         this.meta = response.data.meta;
@@ -49,6 +56,13 @@
                         console.log(error);
                         this.errorMessage = error.response.data.message;
                     });
+            },
+            createData(){
+                this.item = {};
+                $('#userModal').modal('show');
+            },
+            refreshData(item){
+                this.fetchData();
             }
         }
     }
