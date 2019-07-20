@@ -51,26 +51,51 @@
         },
         methods: {
             saveItem(){
-                axios.post('users', this.item)
-                    .then(response => {
-                        console.log(response);
-                        if(response.data.success){
-                            //alert(response.data.message);
-                            this.$emit('onSaved', this.item);
-                            $('#userModal').modal('hide');
-                        }
-                    })
-                    .catch(error => {
-                        console.log(error);
-                        this.errorMessage = error.response.data.message;
-                        if (error.response.data.errors) {
-                            this.errorMessage += '<ul>';
-                            Object.keys(error.response.data.errors).forEach(key => {
-                                this.errorMessage += '<li>'+error.response.data.errors[key][0]+'</li>';
-                            });
-                            this.errorMessage += '</ul>';
-                        }
-                    })
+                if(this.item.id>0){
+                    axios.put('users/'+this.item.id, this.item)
+                        .then(response => {
+                            //console.log(response);
+                            if(response.data.success){
+                                //alert(response.data.message);
+                                this.$emit('onSaved', this.item);
+                                $('#userModal').modal('hide');
+                                toastr.success(response.data.message, 'Kullanıcı');
+                            }
+                        })
+                        .catch(error => {
+                            //console.log(error);
+                            this.errorMessage = error.response.data.message;
+                            if (error.response.data.errors) {
+                                this.errorMessage += '<ul>';
+                                Object.keys(error.response.data.errors).forEach(key => {
+                                    this.errorMessage += '<li>'+error.response.data.errors[key][0]+'</li>';
+                                });
+                                this.errorMessage += '</ul>';
+                            }
+                        });
+                } else{
+                    axios.post('users', this.item)
+                        .then(response => {
+                            //console.log(response);
+                            if(response.data.success){
+                                //alert(response.data.message);
+                                this.$emit('onSaved', this.item);
+                                $('#userModal').modal('hide');
+                                toastr.success(response.data.message, 'Kullanıcı');
+                            }
+                        })
+                        .catch(error => {
+                            //console.log(error);
+                            this.errorMessage = error.response.data.message;
+                            if (error.response.data.errors) {
+                                this.errorMessage += '<ul>';
+                                Object.keys(error.response.data.errors).forEach(key => {
+                                    this.errorMessage += '<li>'+error.response.data.errors[key][0]+'</li>';
+                                });
+                                this.errorMessage += '</ul>';
+                            }
+                        });
+                }
             }
         }
     }

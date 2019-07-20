@@ -3,7 +3,13 @@ window._ = require('lodash');
 try {
     window.Popper = require('popper.js').default;
     window.$ = window.jQuery = require('jquery');
-
+    window.swal = require('sweetalert2');
+    window.toastr = require('toastr');
+    toastr.options = {
+        preventDuplicates: true,
+        showDuration: 500,
+        positionClass: 'toast-bottom-right'
+    };
     require('bootstrap');
 } catch (e) {}
 /**
