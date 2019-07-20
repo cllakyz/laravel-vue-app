@@ -41,7 +41,7 @@ class UserController extends Controller
                 'success' => false,
                 'message' => 'Bir hata oluştu',
                 'errors'  => $validator->errors()
-            ]);
+            ], 422);
         }
         $data = $request->only('name', 'email', 'password');
         $data['password'] = bcrypt($data['password']);

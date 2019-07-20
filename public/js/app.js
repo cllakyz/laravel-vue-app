@@ -2118,9 +2118,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "UserModal",
   props: ['item'],
+  data: function data() {
+    return {
+      errorMessage: ''
+    };
+  },
   methods: {
     saveItem: function saveItem() {
       var _this = this;
@@ -2129,20 +2135,22 @@ __webpack_require__.r(__webpack_exports__);
         console.log(response);
 
         if (response.data.success) {
-          alert(response.data.message);
-
+          //alert(response.data.message);
           _this.$emit('onSaved', _this.item);
 
           $('#userModal').modal('hide');
-        } else {
-          alert(response.data.message);
-
-          if (response.data.errors) {
-            console.log(response.data.errors);
-          }
         }
       })["catch"](function (error) {
         console.log(error);
+        _this.errorMessage = error.response.data.message;
+
+        if (error.response.data.errors) {
+          _this.errorMessage += '<ul>';
+          Object.keys(error.response.data.errors).forEach(function (key) {
+            _this.errorMessage += '<li>' + error.response.data.errors[key][0] + '</li>';
+          });
+          _this.errorMessage += '</ul>';
+        }
       });
     }
   }
@@ -37906,6 +37914,13 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "modal-body" }, [
+            _vm.errorMessage
+              ? _c("div", {
+                  staticClass: "alert alert-danger",
+                  domProps: { innerHTML: _vm._s(_vm.errorMessage) }
+                })
+              : _vm._e(),
+            _vm._v(" "),
             _c(
               "form",
               {

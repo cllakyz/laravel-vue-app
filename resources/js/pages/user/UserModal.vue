@@ -9,6 +9,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div class="alert alert-danger" v-if="errorMessage" v-html="errorMessage"></div>
                     <form @submit.prevent="true">
                         <div class="row form-group">
                             <label class="col-sm-3 col-form-label">Kullanıcı Adı</label>
@@ -43,24 +44,32 @@
     export default {
         name: "UserModal",
         props: ['item'],
+        data(){
+            return{
+                errorMessage: ''
+            }
+        },
         methods: {
             saveItem(){
                 axios.post('users', this.item)
                     .then(response => {
                         console.log(response);
                         if(response.data.success){
-                            alert(response.data.message);
+                            //alert(response.data.message);
                             this.$emit('onSaved', this.item);
                             $('#userModal').modal('hide');
-                        } else{
-                            alert(response.data.message);
-                            if (response.data.errors) {
-                                console.log(response.data.errors);
-                            }
                         }
                     })
                     .catch(error => {
                         console.log(error);
+                        this.errorMessage = error.response.data.message;
+                        if (error.response.data.errors) {
+                            this.errorMessage += '<ul>';
+                            Object.keys(error.response.data.errors).forEach(key => {
+                                this.errorMessage += '<li>'+error.response.data.errors[key][0]+'</li>';
+                            });
+                            this.errorMessage += '</ul>';
+                        }
                     })
             }
         }
