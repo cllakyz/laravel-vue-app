@@ -39,6 +39,8 @@
 <script>
     import Pagination from '../../components/Pagination';
     import UserModal from './UserModal';
+    import UserService from '../../services/user.service';
+
     export default {
         name: "UserList",
         components: {Pagination, UserModal},
@@ -57,7 +59,7 @@
             fetchData(page=1){
                 this.list = [];
                 this.errorMessage = null;
-                axios.get('users', { params: {page}})
+                UserService.GetByPage(page)
                     .then(response => {
                         this.list = response.data.data;
                         this.meta = response.data.meta;
@@ -75,7 +77,7 @@
                 this.fetchData();
             },
             editData(id){
-                axios.get('users/'+id)
+                UserService.GetById(id)
                     .then(response => {
                         //console.log(response.data);
                         this.$refs.userModal.errorMessage = '';
@@ -98,7 +100,7 @@
                     confirmButtonText: 'Evet, Sil!'
                 }).then(result => {
                     if (result.value){
-                        axios.delete('users/'+id)
+                        UserService.DeleteById(id)
                             .then(response => {
                                 this.fetchData();
                                 toastr.success(response.data.message, 'Kullanıcı');

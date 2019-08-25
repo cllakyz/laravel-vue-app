@@ -1989,6 +1989,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Pagination__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../components/Pagination */ "./resources/js/components/Pagination.vue");
 /* harmony import */ var _UserModal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./UserModal */ "./resources/js/pages/user/UserModal.vue");
+/* harmony import */ var _services_user_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../services/user.service */ "./resources/js/services/user.service.js");
 //
 //
 //
@@ -2027,6 +2028,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2053,11 +2055,7 @@ __webpack_require__.r(__webpack_exports__);
       var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
       this.list = [];
       this.errorMessage = null;
-      axios.get('users', {
-        params: {
-          page: page
-        }
-      }).then(function (response) {
+      _services_user_service__WEBPACK_IMPORTED_MODULE_2__["default"].GetByPage(page).then(function (response) {
         _this.list = response.data.data;
         _this.meta = response.data.meta;
       })["catch"](function (error) {
@@ -2076,7 +2074,7 @@ __webpack_require__.r(__webpack_exports__);
     editData: function editData(id) {
       var _this2 = this;
 
-      axios.get('users/' + id).then(function (response) {
+      _services_user_service__WEBPACK_IMPORTED_MODULE_2__["default"].GetById(id).then(function (response) {
         //console.log(response.data);
         _this2.$refs.userModal.errorMessage = '';
         _this2.item = response.data;
@@ -2099,7 +2097,7 @@ __webpack_require__.r(__webpack_exports__);
         confirmButtonText: 'Evet, Sil!'
       }).then(function (result) {
         if (result.value) {
-          axios["delete"]('users/' + id).then(function (response) {
+          _services_user_service__WEBPACK_IMPORTED_MODULE_2__["default"].DeleteById(id).then(function (response) {
             _this3.fetchData();
 
             toastr.success(response.data.message, 'Kullanıcı');
@@ -2123,6 +2121,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _services_user_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../services/user.service */ "./resources/js/services/user.service.js");
 //
 //
 //
@@ -2165,6 +2164,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "UserModal",
   props: ['item'],
@@ -2177,51 +2177,27 @@ __webpack_require__.r(__webpack_exports__);
     saveItem: function saveItem() {
       var _this = this;
 
-      if (this.item.id > 0) {
-        axios.put('users/' + this.item.id, this.item).then(function (response) {
-          //console.log(response);
-          if (response.data.success) {
-            //alert(response.data.message);
-            _this.$emit('onSaved', _this.item);
+      _services_user_service__WEBPACK_IMPORTED_MODULE_0__["default"].Save(this.item).then(function (response) {
+        //console.log(response);
+        if (response.data.success) {
+          //alert(response.data.message);
+          _this.$emit('onSaved', _this.item);
 
-            $('#userModal').modal('hide');
-            toastr.success(response.data.message, 'Kullanıcı');
-          }
-        })["catch"](function (error) {
-          //console.log(error);
-          _this.errorMessage = error.response.data.message;
+          $('#userModal').modal('hide');
+          toastr.success(response.data.message, 'Kullanıcı');
+        }
+      })["catch"](function (error) {
+        //console.log(error);
+        _this.errorMessage = error.response.data.message;
 
-          if (error.response.data.errors) {
-            _this.errorMessage += '<ul>';
-            Object.keys(error.response.data.errors).forEach(function (key) {
-              _this.errorMessage += '<li>' + error.response.data.errors[key][0] + '</li>';
-            });
-            _this.errorMessage += '</ul>';
-          }
-        });
-      } else {
-        axios.post('users', this.item).then(function (response) {
-          //console.log(response);
-          if (response.data.success) {
-            //alert(response.data.message);
-            _this.$emit('onSaved', _this.item);
-
-            $('#userModal').modal('hide');
-            toastr.success(response.data.message, 'Kullanıcı');
-          }
-        })["catch"](function (error) {
-          //console.log(error);
-          _this.errorMessage = error.response.data.message;
-
-          if (error.response.data.errors) {
-            _this.errorMessage += '<ul>';
-            Object.keys(error.response.data.errors).forEach(function (key) {
-              _this.errorMessage += '<li>' + error.response.data.errors[key][0] + '</li>';
-            });
-            _this.errorMessage += '</ul>';
-          }
-        });
-      }
+        if (error.response.data.errors) {
+          _this.errorMessage += '<ul>';
+          Object.keys(error.response.data.errors).forEach(function (key) {
+            _this.errorMessage += '<li>' + error.response.data.errors[key][0] + '</li>';
+          });
+          _this.errorMessage += '</ul>';
+        }
+      });
     }
   }
 });
@@ -56875,6 +56851,66 @@ var routes = [{
   //history
   routes: routes
 }));
+
+/***/ }),
+
+/***/ "./resources/js/services/api.service.js":
+/*!**********************************************!*\
+  !*** ./resources/js/services/api.service.js ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+/* harmony default export */ __webpack_exports__["default"] = (axios__WEBPACK_IMPORTED_MODULE_0___default.a.create({
+  baseURL: 'http://dev.laravelvueapp.com/api/',
+  timeout: 5000,
+  headers: {
+    'Authorization': 'Bearer xxx',
+    'Content-Type': 'application/json'
+  }
+}));
+
+/***/ }),
+
+/***/ "./resources/js/services/user.service.js":
+/*!***********************************************!*\
+  !*** ./resources/js/services/user.service.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _api_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./api.service */ "./resources/js/services/api.service.js");
+
+var resource = 'users';
+/* harmony default export */ __webpack_exports__["default"] = ({
+  GetByPage: function GetByPage(page) {
+    return _api_service__WEBPACK_IMPORTED_MODULE_0__["default"].get(resource, {
+      params: {
+        page: page
+      }
+    });
+  },
+  GetById: function GetById(id) {
+    return _api_service__WEBPACK_IMPORTED_MODULE_0__["default"].get(resource + '/' + id);
+  },
+  DeleteById: function DeleteById(id) {
+    return _api_service__WEBPACK_IMPORTED_MODULE_0__["default"]["delete"](resource + '/' + id);
+  },
+  Save: function Save(item) {
+    if (item.id > 0) {
+      return _api_service__WEBPACK_IMPORTED_MODULE_0__["default"].put(resource + '/' + item.id, item);
+    } else {
+      return _api_service__WEBPACK_IMPORTED_MODULE_0__["default"].post(resource, item);
+    }
+  }
+});
 
 /***/ }),
 

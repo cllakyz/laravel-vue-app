@@ -41,6 +41,8 @@
 </template>
 
 <script>
+    import UserService from '../../services/user.service';
+
     export default {
         name: "UserModal",
         props: ['item'],
@@ -51,51 +53,27 @@
         },
         methods: {
             saveItem(){
-                if(this.item.id>0){
-                    axios.put('users/'+this.item.id, this.item)
-                        .then(response => {
-                            //console.log(response);
-                            if(response.data.success){
-                                //alert(response.data.message);
-                                this.$emit('onSaved', this.item);
-                                $('#userModal').modal('hide');
-                                toastr.success(response.data.message, 'Kullanıcı');
-                            }
-                        })
-                        .catch(error => {
-                            //console.log(error);
-                            this.errorMessage = error.response.data.message;
-                            if (error.response.data.errors) {
-                                this.errorMessage += '<ul>';
-                                Object.keys(error.response.data.errors).forEach(key => {
-                                    this.errorMessage += '<li>'+error.response.data.errors[key][0]+'</li>';
-                                });
-                                this.errorMessage += '</ul>';
-                            }
-                        });
-                } else{
-                    axios.post('users', this.item)
-                        .then(response => {
-                            //console.log(response);
-                            if(response.data.success){
-                                //alert(response.data.message);
-                                this.$emit('onSaved', this.item);
-                                $('#userModal').modal('hide');
-                                toastr.success(response.data.message, 'Kullanıcı');
-                            }
-                        })
-                        .catch(error => {
-                            //console.log(error);
-                            this.errorMessage = error.response.data.message;
-                            if (error.response.data.errors) {
-                                this.errorMessage += '<ul>';
-                                Object.keys(error.response.data.errors).forEach(key => {
-                                    this.errorMessage += '<li>'+error.response.data.errors[key][0]+'</li>';
-                                });
-                                this.errorMessage += '</ul>';
-                            }
-                        });
-                }
+                UserService.Save(this.item)
+                    .then(response => {
+                        //console.log(response);
+                        if(response.data.success){
+                            //alert(response.data.message);
+                            this.$emit('onSaved', this.item);
+                            $('#userModal').modal('hide');
+                            toastr.success(response.data.message, 'Kullanıcı');
+                        }
+                    })
+                    .catch(error => {
+                        //console.log(error);
+                        this.errorMessage = error.response.data.message;
+                        if (error.response.data.errors) {
+                            this.errorMessage += '<ul>';
+                            Object.keys(error.response.data.errors).forEach(key => {
+                                this.errorMessage += '<li>'+error.response.data.errors[key][0]+'</li>';
+                            });
+                            this.errorMessage += '</ul>';
+                        }
+                    });
             }
         }
     }
