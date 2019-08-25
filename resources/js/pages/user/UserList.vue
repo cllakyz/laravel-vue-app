@@ -63,9 +63,6 @@
                     .then(response => {
                         this.list = response.data.data;
                         this.meta = response.data.meta;
-                    }).catch(error => {
-                        console.log(error);
-                        this.errorMessage = error.response.data.message;
                     });
             },
             createData(){
@@ -83,10 +80,6 @@
                         this.$refs.userModal.errorMessage = '';
                         this.item = response.data;
                         $('#userModal').modal('show');
-                    })
-                    .catch(error => {
-                        //console.log(error);
-                        this.errorMessage = error.response.data.message;
                     });
             },
             deleteData(id){
@@ -104,9 +97,6 @@
                             .then(response => {
                                 this.fetchData();
                                 toastr.success(response.data.message, 'Kullanıcı');
-                            })
-                            .catch(error => {
-                                this.errorMessage = error.response.data.message;
                             });
                     }
                 });

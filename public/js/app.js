@@ -2058,9 +2058,6 @@ __webpack_require__.r(__webpack_exports__);
       _services_user_service__WEBPACK_IMPORTED_MODULE_2__["default"].GetByPage(page).then(function (response) {
         _this.list = response.data.data;
         _this.meta = response.data.meta;
-      })["catch"](function (error) {
-        console.log(error);
-        _this.errorMessage = error.response.data.message;
       });
     },
     createData: function createData() {
@@ -2079,9 +2076,6 @@ __webpack_require__.r(__webpack_exports__);
         _this2.$refs.userModal.errorMessage = '';
         _this2.item = response.data;
         $('#userModal').modal('show');
-      })["catch"](function (error) {
-        //console.log(error);
-        _this2.errorMessage = error.response.data.message;
       });
     },
     deleteData: function deleteData(id) {
@@ -2101,8 +2095,6 @@ __webpack_require__.r(__webpack_exports__);
             _this3.fetchData();
 
             toastr.success(response.data.message, 'Kullanıcı');
-          })["catch"](function (error) {
-            _this3.errorMessage = error.response.data.message;
           });
         }
       });
@@ -56866,14 +56858,31 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 
-/* harmony default export */ __webpack_exports__["default"] = (axios__WEBPACK_IMPORTED_MODULE_0___default.a.create({
+var instance = axios__WEBPACK_IMPORTED_MODULE_0___default.a.create({
   baseURL: 'http://dev.laravelvueapp.com/api/',
   timeout: 5000,
   headers: {
     'Authorization': 'Bearer xxx',
     'Content-Type': 'application/json'
   }
-}));
+});
+instance.interceptors.request.use(function (config) {
+  console.log('Request Yapıldı (' + config.method + ')', config.baseURL + config.url);
+  return config;
+});
+instance.interceptors.response.use(function (response) {
+  console.log('Response geldi (' + response.status + ')');
+  return response;
+}, function (error) {
+  if (error.response != null) {
+    toastr.error(error.response.data.message, 'Hata');
+  } else {
+    toastr.error(error.message, 'Hata');
+  }
+
+  return Promise.reject(error);
+});
+/* harmony default export */ __webpack_exports__["default"] = (instance);
 
 /***/ }),
 
