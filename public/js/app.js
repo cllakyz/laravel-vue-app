@@ -56941,8 +56941,8 @@ var resource = 'users';
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\Celal\PhpstormProjects\Vue\Dersler\B7\laravel-vue-app\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\Celal\PhpstormProjects\Vue\Dersler\B7\laravel-vue-app\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\Celal\PhpstormProjects\laravel-vue-app\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\Celal\PhpstormProjects\laravel-vue-app\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
